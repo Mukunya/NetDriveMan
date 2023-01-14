@@ -7,7 +7,7 @@
         mc:Ignorable="d"
              Background="Transparent"
         Title="MainWindow" Height="600" Width="400"
-         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" WindowStyle="None" AllowsTransparency="True">
+         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" WindowStyle="None" AllowsTransparency="True" ResizeMode="NoResize">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <local:VM x:Key="vm"></local:VM>
@@ -16,16 +16,30 @@
         <DockPanel>
             <ui:NotifyIcon MouseUp="TrayIconClick" ToolTip="Network drive manager">
             </ui:NotifyIcon>
-            <ui:TitleBar DockPanel.Dock="Top" Title="Network drive manager" ShowMaximize="False" ShowMinimize="false">
-            </ui:TitleBar>
-            <Grid DockPanel.Dock="Bottom" >
-                <ui:Button HorizontalAlignment="Right" Margin="16" Command="{Binding Add}" Appearance="Primary">
+
+            <DockPanel DockPanel.Dock="Top" MouseDown="TitleMouseDown">
+                <Image Source="Network_drive.ico" Width="32" DockPanel.Dock="Left" Margin="16"></Image>
+                <ui:TitleBar DockPanel.Dock="Right" ShowMaximize="False" ShowMinimize="false">
+                </ui:TitleBar>
+                <Menu DockPanel.Dock="Right" Padding="0" Margin="16" Background="Transparent">
+                    <ui:MenuItem DockPanel.Dock="Right" SymbolIcon="Settings24">
+                        <ui:MenuItem SymbolIcon="ArrowImport20" Header="Import drives" Command="{Binding Import}">
+
+                        </ui:MenuItem>
+                        <ui:MenuItem SymbolIcon="ArrowExportLtr20" Header="Export enabled drives" Command="{Binding Export}">
+
+                        </ui:MenuItem>
+                        <ui:MenuItem SymbolIcon="ArrowExit20" Header="Exit" Command="{Binding Exit}">
+
+                        </ui:MenuItem>
+                    </ui:MenuItem>
+                </Menu>
+
+                <TextBlock Foreground="White" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold">Network drives</TextBlock>
+            </DockPanel>
+            <ui:Button HorizontalAlignment="Right" DockPanel.Dock="Bottom"  Margin="16" Command="{Binding Add}" Appearance="Primary">
                     <ui:SymbolIcon Symbol="Add28" Margin="4"></ui:SymbolIcon>
-                </ui:Button>
-                <ui:Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Margin="16" Command="{Binding Exit}">
-                    Exit app
-                </ui:Button>
-            </Grid>
+            </ui:Button>
             <ui:DynamicScrollViewer>
                 <ItemsControl ItemsSource="{Binding Drives}">
                     <ItemsControl.ItemTemplate>
@@ -38,7 +52,7 @@
 
         </DockPanel>
         <Grid Background="#5f000000" Visibility="{Binding Editing, Converter={StaticResource BoolToVis}}">
-            <ui:Card x:Name="Edit" Margin="16">
+            <ui:Card x:Name="Edit" Margin="16" Opacity="100" Background="#2d2d2d">
                 <DockPanel  Height="400">
                     <ui:Button DockPanel.Dock="Bottom" Margin="16" HorizontalAlignment="Right" Appearance="Primary" Command="{Binding EditClose}" CommandParameter="{Binding ElementName=pwd}">Save</ui:Button>
                     <StackPanel DataContext="{Binding EditingDrive}">

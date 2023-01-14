@@ -17,12 +17,15 @@ namespace NetworkDriveManager
 {
     public class VM:ViewModel
     {
-        public static VM Instance = new VM();
+        FileBrowser browser = new FileBrowser(".xml", "XML file");
         public VM()
         {
             EditClose = new RelayCommand(o=> SaveChanges(o));
             Add = new RelayCommand(_ => AddDrive());
             Exit = new RelayCommand(_ => ExitProgram());
+            Export = new RelayCommand(_ => export());
+            Import = new RelayCommand(_ => import());
+            
             Drives = new();
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mukunya/NetworkDriveMan/drives.xml")))
             {
@@ -61,6 +64,8 @@ namespace NetworkDriveManager
         public ICommand EditClose { get; set; }
         public ICommand Add { get; set; }
         public ICommand Exit { get; set; }
+        public ICommand Export { get; set; }
+        public ICommand Import { get; set; }
         private bool editing = false;
         public bool Editing
         {
@@ -146,6 +151,43 @@ namespace NetworkDriveManager
         {
             EditingDrive = e;
             Editing = true;
+        }
+        private void export()
+        {
+            string fname = browser.GetFileName(FileBrowser.EFileOperations.Save);
+            if (fname == "")
+                return;
+            XmlSerializer xml = new(typeof(Drive[]));
+            FileStream s = File.Create(fname);
+            xml.Serialize(s, Drives.Where(o=>o.Enabled).ToArray());
+            s.Close();
+
+        }
+        private void import()
+        {
+            try
+            {
+                string fname = browser.GetFileName(FileBrowser.EFileOperations.Open);
+                if (fname == "")
+                    return;
+                XmlSerializer xml = new(typeof(Drive[]));
+                FileStream s = File.OpenRead(fname);
+                Drive[] a = xml.Deserialize(s) as Drive[];
+                s.Close();
+                foreach (var item in a)
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        Drives.Add(item);
+                    });
+                }
+                SaveChanges(null);
+            }
+            catch
+            {
+
+            }
+
         }
     }
 }

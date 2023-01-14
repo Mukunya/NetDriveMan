@@ -42,5 +42,10 @@ namespace NetworkDriveManager
         {
             Show();
         }
+
+        private void TitleMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
+        }
     }
 }

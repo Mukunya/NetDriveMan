@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Network_drive.ico" />
+    <Resource Include="Network_drive.ico" />
   </ItemGroup>
 
   <ItemGroup>
