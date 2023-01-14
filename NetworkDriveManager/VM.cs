@@ -96,6 +96,10 @@ namespace NetworkDriveManager
                 {
                     EditingDrive.Password = password;
                 }
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    pwd.Password = "";
+                });
             }
             Editing = false;
             XmlSerializer xml = new(typeof(Drive[]));

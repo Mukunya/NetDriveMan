@@ -114,10 +114,12 @@ namespace NetworkDriveManager
         public event EventHandler SaveDrives;
         public void edit()
         {
+            Enabled = false;
             EditDrive?.Invoke(this, this);
         }
         public void delete()
         {
+            Remove();
             DeleteDrive?.Invoke(this, this);
         }
         public void Remove()
