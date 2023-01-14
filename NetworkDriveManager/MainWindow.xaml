@@ -16,7 +16,7 @@
         <DockPanel>
             <ui:NotifyIcon MouseUp="TrayIconClick" ToolTip="Network drive manager">
             </ui:NotifyIcon>
-            <ui:TitleBar DockPanel.Dock="Top" Title="Network drive manager" ShowMaximize="False" ShowMinimize="true">
+            <ui:TitleBar DockPanel.Dock="Top" Title="Network drive manager" ShowMaximize="False" ShowMinimize="false">
             </ui:TitleBar>
             <Grid DockPanel.Dock="Bottom" >
                 <ui:Button HorizontalAlignment="Right" Margin="16" Command="{Binding Add}" Appearance="Primary">
