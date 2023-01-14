@@ -30,11 +30,17 @@ namespace NetworkDriveManager
         {
             Show();
         }
+
         protected override void OnClosing(CancelEventArgs e)
         {
             Hide();
             e.Cancel= true;
             base.OnClosing(e);
+        }
+
+        private void MenuClick(object sender, RoutedEventArgs e)
+        {
+            Show();
         }
     }
 }

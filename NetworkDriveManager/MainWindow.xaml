@@ -12,14 +12,20 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <local:VM x:Key="vm"></local:VM>
     </Window.Resources>
-    <Grid DataContext="{StaticResource vm}">
+    <Grid DataContext="{StaticResource vm}" x:Name="root">
         <DockPanel>
-            <ui:NotifyIcon MouseUp="TrayIconClick" ToolTip="Network drive manager"/>
-            <ui:TitleBar DockPanel.Dock="Top" Title="Network drive manager" ShowMaximize="False" ShowMinimize="False">
+            <ui:NotifyIcon MouseUp="TrayIconClick" ToolTip="Network drive manager">
+            </ui:NotifyIcon>
+            <ui:TitleBar DockPanel.Dock="Top" Title="Network drive manager" ShowMaximize="False" ShowMinimize="true">
             </ui:TitleBar>
-            <ui:Button DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="16" Command="{Binding Add}">
-                <ui:SymbolIcon Symbol="Add28" Margin="4"></ui:SymbolIcon>
-            </ui:Button>
+            <Grid DockPanel.Dock="Bottom" >
+                <ui:Button HorizontalAlignment="Right" Margin="16" Command="{Binding Add}" Appearance="Primary">
+                    <ui:SymbolIcon Symbol="Add28" Margin="4"></ui:SymbolIcon>
+                </ui:Button>
+                <ui:Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Margin="16" Command="{Binding Exit}">
+                    Exit app
+                </ui:Button>
+            </Grid>
             <ui:DynamicScrollViewer>
                 <ItemsControl ItemsSource="{Binding Drives}">
                     <ItemsControl.ItemTemplate>

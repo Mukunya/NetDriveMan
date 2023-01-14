@@ -120,7 +120,7 @@ namespace NetworkDriveManager
         {
             DeleteDrive?.Invoke(this, this);
         }
-        private void Remove()
+        public void Remove()
         {
             try
             {
@@ -153,6 +153,7 @@ namespace NetworkDriveManager
                         DriveState = Status.OtherError;
                         break;
                 }
+                Remove();
             }
         }
         public void Check()
@@ -181,11 +182,13 @@ namespace NetworkDriveManager
                     {
                         if (DriveState != Status.Working)
                         {
+                            Remove();
                             Register();
                         }
                     }
                     else
                     {
+                        Remove();
                         DriveState = Status.Unreachable;
                     }
                 }

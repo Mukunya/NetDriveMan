@@ -13,5 +13,10 @@ namespace NetworkDriveManager
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnExit(ExitEventArgs e)
+        {
+            ((MainWindow as MainWindow).root.DataContext as VM).ExitProgram();
+            base.OnExit(e);
+        }
     }
 }

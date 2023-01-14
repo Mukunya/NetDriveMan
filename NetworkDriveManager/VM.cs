@@ -22,6 +22,7 @@ namespace NetworkDriveManager
         {
             EditClose = new RelayCommand(o=> SaveChanges(o));
             Add = new RelayCommand(_ => AddDrive());
+            Exit = new RelayCommand(_ => ExitProgram());
             Drives = new();
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mukunya/NetworkDriveMan/drives.xml")))
             {
@@ -59,6 +60,7 @@ namespace NetworkDriveManager
         public ObservableCollection<Drive> Drives { get; set; }
         public ICommand EditClose { get; set; }
         public ICommand Add { get; set; }
+        public ICommand Exit { get; set; }
         private bool editing = false;
         public bool Editing
         {
@@ -104,6 +106,14 @@ namespace NetworkDriveManager
             FileStream s = File.Create(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mukunya/NetworkDriveMan/drives.xml"));
             xml.Serialize(s, Drives.ToArray());
             s.Close();
+        }
+        public void ExitProgram()
+        {
+            foreach (var item in Drives)
+            {
+                item.Remove();
+            }
+            Environment.Exit(0);
         }
         private void AddDrive()
         {
