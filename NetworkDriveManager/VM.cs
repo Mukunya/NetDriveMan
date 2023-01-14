@@ -4,22 +4,34 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Xml.Serialization;
 using VBase;
 using Wpf.Ui.Controls;
+using MessageBox = System.Windows.MessageBox;
+using Timer = System.Timers.Timer;
 
 namespace NetworkDriveManager
 {
     public class VM:ViewModel
     {
+        const int VERSION = 2;
         FileBrowser browser = new FileBrowser(".xml", "XML file");
+        Timer timer = new Timer(1000*60*60*4);
         public VM()
         {
+            timer.Elapsed +=Timer_Elapsed;
+            timer.Start();
+            CheckForUpdates();
+
             EditClose = new RelayCommand(o=> SaveChanges(o));
             Add = new RelayCommand(_ => AddDrive());
             Exit = new RelayCommand(_ => ExitProgram());
@@ -53,6 +65,27 @@ namespace NetworkDriveManager
                 
             }
 
+        }
+
+        private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            CheckForUpdates();
+        }
+
+        private void CheckForUpdates()
+        {
+            using (WebClient client = new WebClient())
+            {
+                string s = client.DownloadString("https://raw.githubusercontent.com/Mukunya/NetDriveMan/master/version.txt");
+                if (int.Parse(s)>VERSION)
+                {
+                    var r = MessageBox.Show("A new version of the network drive manager is available. Would you like to open the releases page?", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    if (r.HasFlag(MessageBoxResult.Yes))
+                    {
+                        Process.Start(new ProcessStartInfo("https://github.com/Mukunya/NetDriveMan/releases") { UseShellExecute = true });
+                    }
+                }
+            }
         }
 
         private void Save(object? sender, EventArgs e)
