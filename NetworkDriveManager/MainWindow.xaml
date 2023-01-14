@@ -1,0 +1,57 @@
+﻿<ui:UiWindow x:Class="NetworkDriveManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NetworkDriveManager"
+        mc:Ignorable="d"
+             Background="Transparent"
+        Title="MainWindow" Height="600" Width="400"
+         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" WindowStyle="None" AllowsTransparency="True">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <local:VM x:Key="vm"></local:VM>
+    </Window.Resources>
+    <Grid DataContext="{StaticResource vm}">
+        <DockPanel>
+            <ui:NotifyIcon MouseUp="TrayIconClick" ToolTip="Network drive manager"/>
+            <ui:TitleBar DockPanel.Dock="Top" Title="Network drive manager" ShowMaximize="False" ShowMinimize="False">
+            </ui:TitleBar>
+            <ui:Button DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="16" Command="{Binding Add}">
+                <ui:SymbolIcon Symbol="Add28" Margin="4"></ui:SymbolIcon>
+            </ui:Button>
+            <ui:DynamicScrollViewer>
+                <ItemsControl ItemsSource="{Binding Drives}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:DriveControl Margin="8"></local:DriveControl>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ui:DynamicScrollViewer>
+
+        </DockPanel>
+        <Grid Background="#5f000000" Visibility="{Binding Editing, Converter={StaticResource BoolToVis}}">
+            <ui:Card x:Name="Edit" Margin="16">
+                <DockPanel  Height="400">
+                    <ui:Button DockPanel.Dock="Bottom" Margin="16" HorizontalAlignment="Right" Appearance="Primary" Command="{Binding EditClose}" CommandParameter="{Binding ElementName=pwd}">Save</ui:Button>
+                    <StackPanel DataContext="{Binding EditingDrive}">
+                        <TextBlock Margin="8" FontSize="16">Edit drive</TextBlock>
+                        <Label Margin="16,0">Letter</Label>
+                        <ui:TextBox Margin="16,0" Text="{Binding Letter}"></ui:TextBox>
+                        <Label Margin="16,0">Name</Label>
+                        <ui:TextBox Margin="16,0" Text="{Binding Name}"></ui:TextBox>
+                        <Label Margin="16,0">Address</Label>
+                        <ui:TextBox Margin="16,0" Text="{Binding Address}"></ui:TextBox>
+                        <Label Margin="16,0">Username</Label>
+                        <ui:TextBox Margin="16,0" Text="{Binding User}"></ui:TextBox>
+                        <Label Margin="16,0">Password</Label>
+                        <ui:PasswordBox x:Name="pwd"  Margin="16,0" PlaceholderEnabled="True" PlaceholderText="Unchanged"></ui:PasswordBox>
+                    </StackPanel>
+                </DockPanel>
+
+            </ui:Card>
+        </Grid>
+        
+    </Grid>
+</ui:UiWindow>
