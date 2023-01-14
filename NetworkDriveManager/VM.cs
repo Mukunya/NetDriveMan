@@ -74,18 +74,26 @@ namespace NetworkDriveManager
 
         private void CheckForUpdates()
         {
-            using (WebClient client = new WebClient())
+            try
             {
-                string s = client.DownloadString("https://raw.githubusercontent.com/Mukunya/NetDriveMan/master/version.txt");
-                if (int.Parse(s)>VERSION)
+                using (WebClient client = new WebClient())
                 {
-                    var r = MessageBox.Show("A new version of the network drive manager is available. Would you like to open the releases page?", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Information);
-                    if (r.HasFlag(MessageBoxResult.Yes))
+                    string s = client.DownloadString("https://raw.githubusercontent.com/Mukunya/NetDriveMan/master/version.txt");
+                    if (int.Parse(s)>VERSION)
                     {
-                        Process.Start(new ProcessStartInfo("https://github.com/Mukunya/NetDriveMan/releases") { UseShellExecute = true });
+                        var r = MessageBox.Show("A new version of the network drive manager is available. Would you like to open the releases page?", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        if (r.HasFlag(MessageBoxResult.Yes))
+                        {
+                            Process.Start(new ProcessStartInfo("https://github.com/Mukunya/NetDriveMan/releases") { UseShellExecute = true });
+                        }
                     }
                 }
             }
+            catch
+            {
+
+            }
+            
         }
 
         private void Save(object? sender, EventArgs e)
