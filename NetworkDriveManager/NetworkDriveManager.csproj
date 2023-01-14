@@ -21,7 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Network_drive.ico" />
+    <Resource Include="Network_drive.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

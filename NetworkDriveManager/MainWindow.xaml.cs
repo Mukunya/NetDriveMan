@@ -24,6 +24,7 @@ namespace NetworkDriveManager
         public MainWindow()
         {
             InitializeComponent();
+            Hide();
         }
 
         private void TrayIconClick(object sender, MouseButtonEventArgs e)

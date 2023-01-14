@@ -1,10 +1,12 @@
-﻿using System;
+﻿using IWshRuntimeLibrary;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Text;
@@ -16,6 +18,7 @@ using System.Windows.Threading;
 using System.Xml.Serialization;
 using VBase;
 using Wpf.Ui.Controls;
+using File = System.IO.File;
 using MessageBox = System.Windows.MessageBox;
 using Timer = System.Timers.Timer;
 
@@ -37,7 +40,18 @@ namespace NetworkDriveManager
             Exit = new RelayCommand(_ => ExitProgram());
             Export = new RelayCommand(_ => export());
             Import = new RelayCommand(_ => import());
-            
+
+            IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
+            string shortcutAddress = Environment.GetFolderPath(Environment.SpecialFolder.Startup) + @"\NetDriveMgmt.lnk";
+            System.Reflection.Assembly curAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+
+            IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(shortcutAddress);
+            shortcut.Description = "Netword drive manager";
+            shortcut.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            shortcut.TargetPath = curAssembly.Location.Replace("dll","exe");
+            shortcut.IconLocation = AppDomain.CurrentDomain.BaseDirectory + @"Network_drive.ico";
+            shortcut.Save();
+
             Drives = new();
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mukunya/NetworkDriveMan/drives.xml")))
             {
