@@ -179,20 +179,29 @@ namespace NetworkDriveManager
                     {
                         hostname = Address.Substring(2).Split('\\')[0];
                     }
-                    var r = ping.Send(hostname);
-                    if (r.Status == IPStatus.Success)
+                    try
                     {
-                        if (DriveState != Status.Working)
+                        var r = ping.Send(hostname);
+                        if (r.Status == IPStatus.Success)
+                        {
+                            if (DriveState != Status.Working)
+                            {
+                                Remove();
+                                Register();
+                            }
+                        }
+                        else
                         {
                             Remove();
-                            Register();
+                            DriveState = Status.Unreachable;
                         }
                     }
-                    else
+                    catch
                     {
                         Remove();
                         DriveState = Status.Unreachable;
                     }
+                    
                 }
                 else
                 {
