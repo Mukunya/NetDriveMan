@@ -26,7 +26,7 @@ namespace NetworkDriveManager
 {
     public class VM:ViewModel
     {
-        const int VERSION = 3;
+        const int VERSION = 4;
         FileBrowser browser = new FileBrowser(".xml", "XML file");
         Timer timer = new Timer(1000*60*60*4);
         public VM()
