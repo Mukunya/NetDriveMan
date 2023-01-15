@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NetworkDriveManager"
         mc:Ignorable="d"
              Background="Transparent"
-        Title="MainWindow" Height="600" Width="400"
+        Title="Network Drive Manager" Height="600" Width="400"
          xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" WindowStyle="None" AllowsTransparency="True" ResizeMode="NoResize">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
