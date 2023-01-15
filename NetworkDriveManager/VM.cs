@@ -41,16 +41,16 @@ namespace NetworkDriveManager
             Export = new RelayCommand(_ => export());
             Import = new RelayCommand(_ => import());
 
-            IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
-            string shortcutAddress = Environment.GetFolderPath(Environment.SpecialFolder.Startup) + @"\NetDriveMgmt.lnk";
-            System.Reflection.Assembly curAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+            //IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
+            //string shortcutAddress = Environment.GetFolderPath(Environment.SpecialFolder.Startup) + @"\NetDriveMgmt.lnk";
+            //System.Reflection.Assembly curAssembly = System.Reflection.Assembly.GetExecutingAssembly();
 
-            IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(shortcutAddress);
-            shortcut.Description = "Netword drive manager";
-            shortcut.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            shortcut.TargetPath = curAssembly.Location.Replace("dll","exe");
-            shortcut.IconLocation = AppDomain.CurrentDomain.BaseDirectory + @"Network_drive.ico";
-            shortcut.Save();
+            //IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(shortcutAddress);
+            //shortcut.Description = "Netword drive manager";
+            //shortcut.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            //shortcut.TargetPath = curAssembly.Location.Replace("dll","");
+            //shortcut.IconLocation = AppDomain.CurrentDomain.BaseDirectory + @"Network_drive.ico";
+            //shortcut.Save();
 
             Drives = new();
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mukunya/NetworkDriveMan/drives.xml")))
