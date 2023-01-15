@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using VBase;
 using System.Xml.Serialization;
+using System.Collections.ObjectModel;
 
 namespace NetworkDriveManager
 {
@@ -23,6 +24,12 @@ namespace NetworkDriveManager
         {
             Working, Disabled, Unreachable, AuthenticationError, OtherError
         }
+        public static string[] DriveLetters = new[]
+        {
+            "A:","B:","C:","D:","E:","F:","G:","H:","I:","J:","K:","L:","M:","N:","O:","P:","Q:","R:","S:","T:","U:","V:","W:","X:","Y:","Z:"
+        };
+        [XmlIgnore]
+        public ObservableCollection<string> AvailableLetters { get; set; } = new ObservableCollection<string>();
         [XmlIgnore]
         private Status status = Status.Disabled;
         [XmlIgnore]
@@ -115,6 +122,19 @@ namespace NetworkDriveManager
         public void edit()
         {
             Enabled = false;
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                AvailableLetters.Clear();
+                foreach (var item in DriveLetters)
+                {
+                    AvailableLetters.Add(item);
+                }
+                foreach (var item in Environment.GetLogicalDrives())
+                {
+                    AvailableLetters.Remove(item.Substring(0, 2));
+                }
+                AvailableLetters.Add(Letter);
+            });
             EditDrive?.Invoke(this, this);
         }
         public void delete()

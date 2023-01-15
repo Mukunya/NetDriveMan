@@ -58,7 +58,7 @@
                     <StackPanel DataContext="{Binding EditingDrive}">
                         <TextBlock Margin="8" FontSize="16">Edit drive</TextBlock>
                         <Label Margin="16,0">Letter</Label>
-                        <ui:TextBox Margin="16,0" Text="{Binding Letter}"></ui:TextBox>
+                        <ComboBox Margin="16,0" ItemsSource="{Binding AvailableLetters}" SelectedItem="{Binding Letter}"></ComboBox>
                         <Label Margin="16,0">Name</Label>
                         <ui:TextBox Margin="16,0" Text="{Binding Name}"></ui:TextBox>
                         <Label Margin="16,0">Address</Label>

@@ -24,7 +24,7 @@
                 <ui:Button DockPanel.Dock="Right" Width="40" Height="40" Margin="4" Command="{Binding Edit}">
                     <ui:SymbolIcon Symbol="Edit16"></ui:SymbolIcon>
                 </ui:Button>
-                <ui:Button DockPanel.Dock="Right" Width="40" Height="40" Margin="4" Background="OrangeRed" Command="{Binding Delete}">
+                <ui:Button DockPanel.Dock="Right" Width="40" Height="40" Margin="4" Appearance="Danger" Command="{Binding Delete}">
                     <ui:SymbolIcon Symbol="Delete16"></ui:SymbolIcon>
                 </ui:Button>
                 
