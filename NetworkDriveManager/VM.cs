@@ -238,8 +238,7 @@ namespace NetworkDriveManager
             {
                 Drives.Add(d);
             });
-            EditingDrive = d;
-            Editing = true;
+            d.edit();
         }
 
         private void D_DeleteDrive(object? sender, Drive e)

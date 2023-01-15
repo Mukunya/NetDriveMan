@@ -66,7 +66,13 @@ namespace NetworkDriveManager
         public string Letter
         {
             get { return letter; }
-            set { letter = value; OnPropertyChanged("Letter"); }
+            set 
+            {
+                if (value != null && value != "")
+                {
+                    letter = value; OnPropertyChanged("Letter");
+                }
+            }
         }
         private bool enabled = false;
         public bool Enabled
@@ -133,7 +139,14 @@ namespace NetworkDriveManager
                 {
                     AvailableLetters.Remove(item.Substring(0, 2));
                 }
-                AvailableLetters.Add(Letter);
+                if (Letter == "")
+                {
+                    Letter = AvailableLetters.First();
+                }
+                else
+                {
+                    AvailableLetters.Add(Letter);
+                }
             });
             EditDrive?.Invoke(this, this);
         }
@@ -201,7 +214,7 @@ namespace NetworkDriveManager
                     }
                     try
                     {
-                        var r = ping.Send(hostname);
+                        var r = ping.Send(hostname,500);
                         if (r.Status == IPStatus.Success)
                         {
                             if (DriveState != Status.Working)
@@ -218,7 +231,10 @@ namespace NetworkDriveManager
                     }
                     catch
                     {
-                        Remove();
+                        if (DriveState == Status.Working)
+                        {
+                            Remove();
+                        }
                         DriveState = Status.Unreachable;
                     }
                     
