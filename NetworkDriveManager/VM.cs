@@ -160,6 +160,7 @@ namespace NetworkDriveManager
                 {
                     pwd.Password = "";
                 });
+                EditingDrive.Enabled=true;
             }
             Editing = false;
             XmlSerializer xml = new(typeof(Drive[]));
