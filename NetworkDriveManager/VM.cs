@@ -26,7 +26,7 @@ namespace NetworkDriveManager
 {
     public class VM:ViewModel
     {
-        const int VERSION = 2;
+        const int VERSION = 3;
         FileBrowser browser = new FileBrowser(".xml", "XML file");
         Timer timer = new Timer(1000*60*60*4);
         public VM()
@@ -40,6 +40,13 @@ namespace NetworkDriveManager
             Exit = new RelayCommand(_ => ExitProgram());
             Export = new RelayCommand(_ => export());
             Import = new RelayCommand(_ => import());
+            Refresh = new RelayCommand(_ =>
+            {
+                foreach (var item in Drives)
+                {
+                    item.Check();
+                }
+            });
 
             Drives = new();
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mukunya/NetworkDriveMan/drives.xml")))
@@ -137,6 +144,7 @@ namespace NetworkDriveManager
         public ICommand Exit { get; set; }
         public ICommand Export { get; set; }
         public ICommand Import { get; set; }
+        public ICommand Refresh { get; set; }
         private bool editing = false;
         public bool Editing
         {

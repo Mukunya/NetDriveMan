@@ -34,11 +34,13 @@
                         </ui:MenuItem>
                     </ui:MenuItem>
                 </Menu>
-
+                <ui:Button DockPanel.Dock="Right" Command="{Binding Refresh}">
+                    <ui:SymbolIcon Symbol="ArrowClockwise24"></ui:SymbolIcon>
+                </ui:Button>
                 <TextBlock Foreground="White" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold">Network drives</TextBlock>
             </DockPanel>
             <ui:Button HorizontalAlignment="Right" DockPanel.Dock="Bottom"  Margin="16" Command="{Binding Add}" Appearance="Primary">
-                    <ui:SymbolIcon Symbol="Add28" Margin="4"></ui:SymbolIcon>
+                    <ui:SymbolIcon Symbol="Add28" Margin="4" Foreground="Black"></ui:SymbolIcon>
             </ui:Button>
             <ui:DynamicScrollViewer>
                 <ItemsControl ItemsSource="{Binding Drives}">
