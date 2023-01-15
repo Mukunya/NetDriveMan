@@ -17,7 +17,7 @@
             <ui:NotifyIcon MouseUp="TrayIconClick" ToolTip="Network drive manager">
             </ui:NotifyIcon>
 
-            <DockPanel DockPanel.Dock="Top" MouseDown="TitleMouseDown">
+            <DockPanel DockPanel.Dock="Top" MouseDown="TitleMouseDown" Background="#01000000">
                 <Image Source="Network_drive.ico" Width="32" DockPanel.Dock="Left" Margin="16"></Image>
                 <ui:TitleBar DockPanel.Dock="Right" ShowMaximize="False" ShowMinimize="false">
                 </ui:TitleBar>
