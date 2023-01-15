@@ -31,54 +31,70 @@ namespace NetworkDriveManager
         Timer timer = new Timer(1000*60*60*4);
         public VM()
         {
-            timer.Elapsed +=Timer_Elapsed;
+            timer.Elapsed += Timer_Elapsed;
             timer.Start();
             CheckForUpdates();
 
-            EditClose = new RelayCommand(o=> SaveChanges(o));
+            EditClose = new RelayCommand(o => SaveChanges(o));
             Add = new RelayCommand(_ => AddDrive());
             Exit = new RelayCommand(_ => ExitProgram());
             Export = new RelayCommand(_ => export());
             Import = new RelayCommand(_ => import());
 
-            //IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
-            //string shortcutAddress = Environment.GetFolderPath(Environment.SpecialFolder.Startup) + @"\NetDriveMgmt.lnk";
-            //System.Reflection.Assembly curAssembly = System.Reflection.Assembly.GetExecutingAssembly();
-
-            //IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(shortcutAddress);
-            //shortcut.Description = "Netword drive manager";
-            //shortcut.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            //shortcut.TargetPath = curAssembly.Location.Replace("dll","");
-            //shortcut.IconLocation = AppDomain.CurrentDomain.BaseDirectory + @"Network_drive.ico";
-            //shortcut.Save();
-
             Drives = new();
             if (File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mukunya/NetworkDriveMan/drives.xml")))
             {
-                XmlSerializer xml = new(typeof(Drive[]));
-                FileStream s = File.OpenRead(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mukunya/NetworkDriveMan/drives.xml"));
-                try
+                using (AesCryptoServiceProvider AES = new AesCryptoServiceProvider())
                 {
-                    Drive[] drives = xml.Deserialize(s) as Drive[];
-                    App.Current.Dispatcher.Invoke(() =>
+                    UnicodeEncoding UE = new UnicodeEncoding();
+                    byte[] passwordBytes = UE.GetBytes("Pkajlsdfhliouwzer8748)(=(!=%+=%/!(/");
+                    byte[] aesKey = SHA256Managed.Create().ComputeHash(passwordBytes);
+                    byte[] aesIV = MD5.Create().ComputeHash(passwordBytes);
+                    AES.Key = aesKey;
+                    AES.IV = aesIV;
+                    AES.Mode = CipherMode.CBC;
+                    AES.Padding = PaddingMode.PKCS7;
+
+                    using (MemoryStream memoryStream = new MemoryStream())
                     {
-                        foreach (var item in drives)
+                        FileStream fs = new(
+                             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mukunya/NetworkDriveMan/drives.xml"),
+                             FileMode.Open);
+                        CryptoStream cs = new CryptoStream(fs, AES.CreateDecryptor(), CryptoStreamMode.Read);
+
+
+                        int read;
+                        byte[] buffer = new byte[1048576];
+                        MemoryStream xmlContent = new();
+                        while ((read = cs.Read(buffer, 0, buffer.Length)) > 0)
                         {
-                            item.DeleteDrive += D_DeleteDrive;
-                            item.EditDrive += D_EditDrive;
-                            item.SaveDrives +=Save;
-                            Drives.Add(item);
+                            xmlContent.Write(buffer, 0, read);
                         }
-                    });
-                }
-                catch
-                {
 
+                        xmlContent.Position = 0;
+
+                        XmlSerializer xml = new(typeof(Drive[]));
+
+                        try
+                        {
+                            Drive[] drives = xml.Deserialize(xmlContent) as Drive[];
+                            App.Current.Dispatcher.Invoke(() =>
+                            {
+                                foreach (var item in drives)
+                                {
+                                    item.DeleteDrive += D_DeleteDrive;
+                                    item.EditDrive += D_EditDrive;
+                                    item.SaveDrives += Save;
+                                    Drives.Add(item);
+                                }
+                            });
+                        }
+                        catch { }
+                        fs.Close();
+
+                    }
                 }
-                s.Close();
-                
             }
-
         }
 
         private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
@@ -141,10 +157,9 @@ namespace NetworkDriveManager
                 OnPropertyChanged("EditingDrive");
             }
         }
-        
         private void SaveChanges(object o)
         {
-            if (o!=null)
+            if (o != null)
             {
                 PasswordBox pwd = o as PasswordBox;
                 string password = "";
@@ -160,17 +175,42 @@ namespace NetworkDriveManager
                 {
                     pwd.Password = "";
                 });
-                EditingDrive.Enabled=true;
+                EditingDrive.Enabled = true;
             }
             Editing = false;
-            XmlSerializer xml = new(typeof(Drive[]));
-            if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"Mukunya/NetworkDriveMan")))
+
+            if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mukunya/NetworkDriveMan")))
             {
                 Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mukunya/NetworkDriveMan"));
             }
-            FileStream s = File.Create(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mukunya/NetworkDriveMan/drives.xml"));
-            xml.Serialize(s, Drives.ToArray());
-            s.Close();
+            MemoryStream ms = new();
+            XmlSerializer xml = new(typeof(Drive[]));
+            xml.Serialize(ms, Drives.ToArray());
+            byte[] msb = ms.ToArray();
+
+            using (AesCryptoServiceProvider AES = new AesCryptoServiceProvider())
+            {
+                UnicodeEncoding UE = new UnicodeEncoding();
+                byte[] passwordBytes = UE.GetBytes("Pkajlsdfhliouwzer8748)(=(!=%+=%/!(/");
+                byte[] aesKey = SHA256Managed.Create().ComputeHash(passwordBytes);
+                byte[] aesIV = MD5.Create().ComputeHash(passwordBytes);
+                AES.Key = aesKey;
+                AES.IV = aesIV;
+                AES.Mode = CipherMode.CBC;
+                AES.Padding = PaddingMode.PKCS7;
+
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    CryptoStream cryptoStream = new CryptoStream(memoryStream, AES.CreateEncryptor(), CryptoStreamMode.Write);
+
+                    cryptoStream.Write(msb, 0, msb.Length);
+                    cryptoStream.FlushFinalBlock();
+
+                    File.WriteAllBytes(
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Mukunya/NetworkDriveMan/drives.xml"),
+                        memoryStream.ToArray());
+                }
+            }
         }
         public void ExitProgram()
         {
