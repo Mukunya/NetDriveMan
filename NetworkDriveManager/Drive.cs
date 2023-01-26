@@ -165,11 +165,32 @@ namespace NetworkDriveManager
             {
             }
         }
+        static string[] GetMappedNetworkDrives()
+        {
+            IWshCollection colNetDrives = Net.EnumNetworkDrives();
+            var enumerator = colNetDrives.GetEnumerator();
+            var rll = new List<string>();
+            while (enumerator.MoveNext())
+            {
+
+                string item = enumerator.Current as string;
+                if (item == "")
+                {
+                    enumerator.MoveNext();
+                    continue;
+                }
+                enumerator.MoveNext();
+                rll.Add(item);
+            }
+
+            return rll.ToArray();
+        }
         private void Register()
         {
             try
             {
                 Net.MapNetworkDrive(Letter, Address, "false", User, Password);
+                
                 DriveState = Status.Working;
             }
             catch (Exception ex)
@@ -214,6 +235,10 @@ namespace NetworkDriveManager
                     }
                     try
                     {
+                        if (!(GetMappedNetworkDrives().Contains(Letter)) && DriveState == Status.Working)
+                        {
+                            DriveState = Status.Unreachable;
+                        }
                         var r = ping.Send(hostname,500);
                         if (r.Status == IPStatus.Success)
                         {
@@ -247,5 +272,6 @@ namespace NetworkDriveManager
             });
             
         }
+
     }
 }
